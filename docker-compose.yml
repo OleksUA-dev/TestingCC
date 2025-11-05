@@ -69,6 +69,20 @@ services:
       - corecrm-network
     restart: unless-stopped
 
+  # Frontend UI (MVP 3)
+  frontend:
+    build:
+      context: ./frontend/corecrm-ui
+      dockerfile: Dockerfile
+    container_name: corecrm-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - corecrm-network
+    restart: unless-stopped
+
 volumes:
   postgres_data:
     driver: local
