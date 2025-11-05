@@ -17,12 +17,16 @@ axum.workspace = true
 tower.workspace = true
 tower-http.workspace = true
 
+# Database
+sqlx.workspace = true
+
 # Serialization
 serde.workspace = true
 serde_json.workspace = true
 
 # Error handling
 anyhow.workspace = true
+thiserror.workspace = true
 
 # Tracing
 tracing.workspace = true
@@ -32,5 +36,24 @@ tracing-subscriber.workspace = true
 config.workspace = true
 dotenvy.workspace = true
 
+# UUID and time
+uuid.workspace = true
+chrono.workspace = true
+
+# Authentication
+jsonwebtoken.workspace = true
+bcrypt.workspace = true
+
+# Validation
+validator.workspace = true
+
+# GraphQL
+async-graphql.workspace = true
+async-graphql-axum.workspace = true
+
 # HTTP client
 reqwest = { version = "0.11", features = ["json"] }
+
+# OpenAPI
+utoipa = { version = "4.1", features = ["axum_extras", "chrono", "uuid"] }
+utoipa-swagger-ui = { version = "6.0", features = ["axum"] }

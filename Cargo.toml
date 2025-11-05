@@ -46,6 +46,7 @@ dotenvy = "0.15"
 
 # Authentication
 jsonwebtoken = "9.2"
+bcrypt = "0.15"
 
 # GraphQL (for future use)
 async-graphql = { version = "7.0", features = ["uuid", "chrono"] }

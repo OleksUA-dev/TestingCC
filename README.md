@@ -9,6 +9,17 @@
 - **Flexibility**: Metadata-driven architecture for rapid customization
 - **Scalability**: Horizontal and vertical scaling support
 
+## 📦 Current Version: MVP 2
+
+**NEW:** MVP 2 is now available! See [MVP2_GUIDE.md](MVP2_GUIDE.md) for complete documentation.
+
+### ✨ MVP 2 Features
+- ✅ **JWT Authentication** - Secure user authentication with bcrypt password hashing
+- ✅ **Dynamic CRUD API** - Auto-generated REST endpoints for custom entities
+- ✅ **User Management** - Register, login, and manage users
+- ✅ **Role-Based Access** - User vs admin permissions
+- ✅ **Audit Trails** - Automatic tracking of created_by, updated_by, timestamps
+
 ## 🏗️ Architecture
 
 ### Microservices Structure
@@ -46,38 +57,57 @@ CoreCRM-R/
 
 ### Development Setup
 
-1. **Clone the repository**:
-   ```bash
-   git clone <repository-url>
-   cd TestingCC
-   ```
+#### Option 1: Docker Compose (Recommended)
 
-2. **Copy environment configuration**:
-   ```bash
-   cp .env.example .env
-   ```
+```bash
+# 1. Clone and navigate to repository
+git clone <repository-url>
+cd TestingCC
 
-3. **Start PostgreSQL with Docker Compose**:
-   ```bash
-   docker-compose up -d postgres
-   ```
+# 2. Copy environment configuration
+cp .env.example .env
 
-4. **Run database migrations**:
-   ```bash
-   cd services/metadata-service
-   cargo install sqlx-cli --no-default-features --features postgres
-   sqlx migrate run
-   ```
+# 3. Start all services with Docker Compose
+docker-compose up -d
 
-5. **Start the metadata service**:
-   ```bash
-   cargo run --package metadata-service
-   ```
+# 4. Verify services are running
+curl http://localhost:8001/health  # Metadata Service
+curl http://localhost:8000/health  # API Gateway
 
-6. **Verify the service is running**:
-   ```bash
-   curl http://localhost:8001/health
-   ```
+# 5. Login to get JWT token
+curl -X POST http://localhost:8000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "admin", "password": "admin123"}'
+```
+
+#### Option 2: Local Development
+
+```bash
+# 1. Clone repository
+git clone <repository-url>
+cd TestingCC
+
+# 2. Copy environment configuration
+cp .env.example .env
+
+# 3. Start PostgreSQL
+docker-compose up -d postgres
+
+# 4. Install sqlx-cli
+cargo install sqlx-cli --no-default-features --features postgres
+
+# 5. Run migrations for both services
+cd services/metadata-service && sqlx migrate run && cd ../..
+cd services/api-gateway && sqlx migrate run && cd ../..
+
+# 6. Start services (in separate terminals)
+cargo run --package metadata-service  # Terminal 1
+cargo run --package api-gateway       # Terminal 2
+
+# 7. Verify services
+curl http://localhost:8001/health
+curl http://localhost:8000/health
+```
 
 ## 📚 API Documentation
 
