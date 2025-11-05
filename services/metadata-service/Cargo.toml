@@ -45,3 +45,7 @@ validator.workspace = true
 
 # Regex
 regex.workspace = true
+
+# OpenAPI / Swagger
+utoipa.workspace = true
+utoipa-swagger-ui.workspace = true

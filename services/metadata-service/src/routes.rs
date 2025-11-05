@@ -6,8 +6,10 @@ use sqlx::PgPool;
 use std::sync::Arc;
 use tower_http::trace::TraceLayer;
 use tower_http::cors::{CorsLayer, Any};
+use utoipa::OpenApi;
+use utoipa_swagger_ui::SwaggerUi;
 
-use crate::{config::Config, handlers};
+use crate::{config::Config, handlers, openapi::ApiDoc};
 
 #[derive(Clone)]
 pub struct AppState {
@@ -19,6 +21,10 @@ pub fn create_router(state: Arc<AppState>) -> Router {
     Router::new()
         // Health check
         .route("/health", get(handlers::health::health_check))
+
+        // Swagger UI - доступний на http://localhost:8001/swagger-ui/
+        .merge(SwaggerUi::new("/swagger-ui")
+            .url("/api-docs/openapi.json", ApiDoc::openapi()))
 
         // Entity management routes
         .route("/api/v1/entities", post(handlers::entity::create_entity))

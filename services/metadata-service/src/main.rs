@@ -3,6 +3,8 @@ mod handlers;
 mod repository;
 mod routes;
 mod service;
+mod workflow;
+mod openapi;
 
 use anyhow::Result;
 use sqlx::postgres::PgPoolOptions;
