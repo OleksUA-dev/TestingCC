@@ -1,0 +1,70 @@
+version: '3.9'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:16-alpine
+    container_name: corecrm-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-corecrm}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-corecrm_password}
+      POSTGRES_DB: ${POSTGRES_DB:-corecrm_metadata}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-corecrm}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - corecrm-network
+
+  # Metadata Service
+  metadata-service:
+    build:
+      context: .
+      dockerfile: services/metadata-service/Dockerfile
+    container_name: corecrm-metadata-service
+    environment:
+      METADATA__DATABASE__URL: postgresql://${POSTGRES_USER:-corecrm}:${POSTGRES_PASSWORD:-corecrm_password}@postgres:5432/${POSTGRES_DB:-corecrm_metadata}
+      METADATA__DATABASE__MAX_CONNECTIONS: 10
+      METADATA__SERVER__HOST: 0.0.0.0
+      METADATA__SERVER__PORT: 8001
+      RUST_LOG: ${RUST_LOG:-info}
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - corecrm-network
+    restart: unless-stopped
+
+  # API Gateway (commented out for MVP 1)
+  # api-gateway:
+  #   build:
+  #     context: .
+  #     dockerfile: services/api-gateway/Dockerfile
+  #   container_name: corecrm-api-gateway
+  #   environment:
+  #     GATEWAY__SERVER__HOST: 0.0.0.0
+  #     GATEWAY__SERVER__PORT: 8000
+  #     GATEWAY__METADATA_SERVICE_URL: http://metadata-service:8001
+  #     RUST_LOG: ${RUST_LOG:-info}
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - metadata-service
+  #   networks:
+  #     - corecrm-network
+  #   restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  corecrm-network:
+    driver: bridge
