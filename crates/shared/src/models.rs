@@ -5,6 +5,7 @@ pub mod user;
 pub mod auth;
 pub mod ui_metadata;
 pub mod rbac;
+pub mod workflow;
 
 pub use entity::*;
 pub use attribute::*;
@@ -13,3 +14,4 @@ pub use user::*;
 pub use auth::*;
 pub use ui_metadata::*;
 pub use rbac::*;
+pub use workflow::*;

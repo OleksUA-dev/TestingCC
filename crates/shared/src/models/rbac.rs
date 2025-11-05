@@ -3,13 +3,15 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use validator::Validate;
 
-/// Role defines a set of permissions
+/// Role defines a set of permissions with support for inheritance
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Role {
     pub id: Uuid,
     pub name: String,
     pub description: Option<String>,
     pub is_system: bool,
+    /// Parent role for inheritance (optional)
+    pub parent_role_id: Option<Uuid>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -51,6 +53,8 @@ pub struct CreateRoleRequest {
     #[validate(length(min = 1, max = 100))]
     pub name: String,
     pub description: Option<String>,
+    /// Parent role for inheritance
+    pub parent_role_id: Option<Uuid>,
 }
 
 /// Request to set entity permissions

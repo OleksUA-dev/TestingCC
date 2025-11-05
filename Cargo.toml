@@ -54,3 +54,6 @@ async-graphql-axum = "7.0"
 
 # Validation
 validator = { version = "0.18", features = ["derive"] }
+
+# Regex
+regex = "1.10"

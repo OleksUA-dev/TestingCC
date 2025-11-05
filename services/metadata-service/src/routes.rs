@@ -37,6 +37,34 @@ pub fn create_router(state: Arc<AppState>) -> Router {
         // Schema generation
         .route("/api/v1/entities/:id/schema", post(handlers::schema::generate_schema))
 
+        // Workflow management routes
+        .route("/api/v1/workflows", post(handlers::workflow::create_workflow))
+        .route("/api/v1/workflows", get(handlers::workflow::list_workflows))
+        .route("/api/v1/workflows/:id", get(handlers::workflow::get_workflow))
+        .route("/api/v1/workflows/:id/full", get(handlers::workflow::get_workflow_full))
+        .route("/api/v1/workflows/:id", delete(handlers::workflow::delete_workflow))
+
+        // Workflow node routes
+        .route("/api/v1/workflows/nodes", post(handlers::workflow::create_node))
+        .route("/api/v1/workflows/:workflow_id/nodes", get(handlers::workflow::get_workflow_nodes))
+        .route("/api/v1/workflows/nodes/:node_id", delete(handlers::workflow::delete_node))
+
+        // Workflow edge routes
+        .route("/api/v1/workflows/edges", post(handlers::workflow::create_edge))
+        .route("/api/v1/workflows/:workflow_id/edges", get(handlers::workflow::get_workflow_edges))
+        .route("/api/v1/workflows/edges/:edge_id", delete(handlers::workflow::delete_edge))
+
+        // Workflow variable routes
+        .route("/api/v1/workflows/:workflow_id/variables", get(handlers::workflow::get_workflow_variables))
+
+        // Workflow validation
+        .route("/api/v1/workflows/:workflow_id/validate", post(handlers::workflow::validate_workflow))
+
+        // Workflow execution routes
+        .route("/api/v1/workflows/:workflow_id/execute", post(handlers::workflow::execute_workflow))
+        .route("/api/v1/workflows/:workflow_id/executions", get(handlers::workflow::get_workflow_executions))
+        .route("/api/v1/executions/:execution_id", get(handlers::workflow::get_execution))
+
         // Add state
         .with_state(state)
 
